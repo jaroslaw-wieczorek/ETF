@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, Body
 from pydantic import BaseModel
 from fastapi import HTTPException, status
-from typing import List, Dict
+
 import uvicorn
 import logging
 import json
@@ -190,9 +190,6 @@ def get_new_stock(stock: dict) -> dict:
     # received shares.
     stock_value = stock_price * stock_number
     stock_percent = stock_value / (wallets_balance['total_sum'] + stock_value)
-
-    # print(F"Stock value: {stock_value}")
-    # print(F"Stock percent (value/total_sum + value): {stock_percent}")
 
     # Spread stocks
     spread_stocks_to_wallets(

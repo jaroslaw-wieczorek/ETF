@@ -103,7 +103,10 @@ async def task():
         data, r = await send_new_wallets_balance()
         # Print response
         print(F"[*] Send data: {data} | Status code: {r.status_code}")
-        print(F"[*] Response wallets status: {r.json() if r.status_code == 200 else 'Bad request'}\n")
+        if r.status_code != 200:
+            print(F"[!] {r.content.decode('utf-8')}\n")
+        else:
+            print(F"[*] Response wallets status: {r.json()}\n")
     except requests.exceptions.ConnectionError as err:
         print("[!] Wait for connection")
         counter = 0
