@@ -52,7 +52,6 @@ def generate_data(account_num=2) -> dict:
 
     # Chose names from list
     chosed_name: list = account_names[:account_num]
-    print(chosed_name)
     # Split 100 between number of accounts
     f: list = random_target_percent(account_num)
 
@@ -92,21 +91,25 @@ async def send_new_wallets_balance():
 
     # Send post
     r = requests.post(url=URL, data=json.dumps(data))
-    return data, r.status_code
+
+    return data, r
 
 
 async def task():
     """ Task execute send method """
     try:
-    	# Print time
-        print(F"Time: {round(time.time() - start_time, 1)}") 
-
+        print(F"[*] Time is seconds: {round(time.time() - start_time, 1)}") 
         # Generate and send data
-        data = await send_new_wallets_balance()
-        print(F"Send data: {data[0]} | Status code: {data[1]}")
+        data, r = await send_new_wallets_balance()
+        # Print response
+        print(F"[*] Send data: {data} | Status code: {r.status_code}")
+        print(F"[*] Response wallets status: {r.json() if r.status_code == 200 else 'Bad request'}\n")
+    except requests.exceptions.ConnectionError as err:
+        print("[!] Wait for connection")
+        counter = 0
     except Exception as err:
-        print("Wait for connection")
-
+        print(F"[!] Error: {err}")
+        counter = 0
 
 async def do_task_periodically(interval, task):
 

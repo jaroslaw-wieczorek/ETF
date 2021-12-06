@@ -17,25 +17,32 @@ URL = "http://127.0.0.1:6003/stocks"
 
 async def send_stocks():
     """ Generate and send new stock """
-    name = random.choice(fill_names)
-    value = round(random.uniform(1, 20000), 2)
+    global URL
+    name = str(random.choice(fill_names))
+    value = float(round(random.uniform(1, 20000), 2))
     number = random.randint(number_range[0], number_range[1])
     data = {'name': name, 'price': value, 'number': number}
-    response = requests.post(URL, data=json.dumps(data))
+    response = requests.post(url=URL, data=json.dumps(data))
     return data, response
 
 async def task():
     """ Task execute send method """
     try:
         # Print time
-        print(F"Time: {round(time.time() - start_time, 1)}") 
+        print(F"[*] Time is seconds: {round(time.time() - start_time, 1)}") 
         
         # Generate and send stocks
-        data = await send_stocks()
-
-        print(F"Buy {data[0]} | Status code: {data[1]}")
+        data, r = await send_stocks()
+        print(F"[*] Buy: {data} | Status code: {r.status_code}")
+        print(F"[*] Response wallets status: {r.json() if r.status_code == 200 else 'Bad request'}\n")
+        if r.status_code == 400:
+            print(r.content.decode('utf-8'))
+    except requests.exceptions.ConnectionError as err:
+        print("[!] Wait for connection")
+        counter = 0
     except Exception as err:
-        print("Wait for connection")
+        print(F"[!] Error: {err}")
+        counter = 0
 
 
 async def do_task_periodically(interval, task):
