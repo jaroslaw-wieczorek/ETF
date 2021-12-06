@@ -16,6 +16,7 @@ URL = "http://127.0.0.1:6003/stocks"
 
 
 async def send_stocks():
+    """ Generate and send new stock """
     name = random.choice(fill_names)
     value = round(random.uniform(1, 20000), 2)
     number = random.randint(number_range[0], number_range[1])

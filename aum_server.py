@@ -47,19 +47,32 @@ def random_target_percent(parts, total=100, places=0):
     return f   
 
 
-def generate_data(account_num=2):
+def generate_data(account_num=2) -> dict:
     """Generate accounts balance """
 
     # Chose names from list
-    chosed_name = account_names[:account_num]
-
+    chosed_name: list = account_names[:account_num]
+    print(chosed_name)
     # Split 100 between number of accounts
-    f = random_target_percent(account_num)
+    f: list = random_target_percent(account_num)
+
+    while min(f) <= 0:
+        # Get max value
+        max_pos = f.index(max(f))
+
+        # Get min value
+        min_pos = f.index(min(f))
+
+        f[max_pos] -= 1
+        f[min_pos] += 1
 
     # Assign balance to account
     for account in account_names:
         if account in chosed_name:
             data[account] = f.pop()
+        elif account in data.keys():
+            del data[account]
+
     return data
 
 
